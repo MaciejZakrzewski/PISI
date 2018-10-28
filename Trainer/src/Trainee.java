@@ -76,6 +76,8 @@ public class Trainee {
       parameters.add(params);
     }
 
+    br.close();
+
     return parameters;
   }
 }

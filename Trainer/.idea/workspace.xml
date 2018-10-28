@@ -2,32 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="07930fa1-4880-4b25-9217-ee37db7902f3" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/../Trainee/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Trainee/Trainee_instruction.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Trainee/description.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Trainee/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/Trainer.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sbt.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Trainer_instruction.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/run.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Trainee.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/data_in.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/data_out.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/description_in.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/train_set.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Trainee/.idea/Trainee.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../Trainee/.idea/Trainee.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Trainee/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Trainee/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Trainee/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Trainee/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Trainee/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Trainee/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Trainee/src/Trainee.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trainer.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Trainee.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Trainee.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Trainer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Trainer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../farm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/Trainee.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/Trainee.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/Trainer.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/Trainer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/data_out.txt" beforeDir="false" afterPath="$PROJECT_DIR$/test/data_out.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/description_out.txt" beforeDir="false" afterPath="$PROJECT_DIR$/test/description_out.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -41,8 +22,8 @@
       <file leaf-file-name="Trainer.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Trainer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="71">
-              <caret line="28" column="23" selection-start-line="28" selection-start-column="23" selection-end-line="28" selection-end-column="23" />
+            <state relative-caret-position="459">
+              <caret line="87" column="50" selection-start-line="87" selection-start-column="42" selection-end-line="87" selection-end-column="50" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#4159#4160#0" expanded="true" />
@@ -54,7 +35,11 @@
       </file>
       <file leaf-file-name="data_out.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/data_out.txt">
-          <provider selected="true" editor-type-id="text-editor" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret column="14" lean-forward="true" selection-start-column="14" selection-end-column="14" />
+            </state>
+          </provider>
         </entry>
       </file>
       <file leaf-file-name="List.java" pinned="false" current-in-tab="false">
@@ -105,8 +90,8 @@
       <file leaf-file-name="Trainee.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Trainee.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-333">
-              <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
+            <state relative-caret-position="445">
+              <caret line="32" column="26" lean-forward="true" selection-start-line="32" selection-start-column="26" selection-end-line="32" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -148,6 +133,8 @@
         <option value="$PROJECT_DIR$/run.bat" />
         <option value="$PROJECT_DIR$/test/data_in.txt" />
         <option value="$PROJECT_DIR$/farm" />
+        <option value="$PROJECT_DIR$/src/Trainee.java" />
+        <option value="$PROJECT_DIR$/test/data_out.txt" />
         <option value="$PROJECT_DIR$/src/Trainer.java" />
       </list>
     </option>
@@ -305,12 +292,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1540726919429</updated>
-      <workItem from="1540726920644" duration="15573000" />
+      <workItem from="1540726920644" duration="19116000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="15573000" />
+    <option name="totallyTimeSpent" value="19116000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -381,27 +368,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/data_in.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="16" selection-start-column="16" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/data_out.txt">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/run.bat">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
           <caret line="5" column="5" lean-forward="true" selection-start-line="5" selection-start-column="5" selection-end-line="5" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/description_in.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
         </state>
       </provider>
     </entry>
@@ -414,8 +384,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Trainee.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-333">
-          <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
+        <state relative-caret-position="445">
+          <caret line="32" column="26" lean-forward="true" selection-start-line="32" selection-start-column="26" selection-end-line="32" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/description_in.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
         </state>
       </provider>
     </entry>
@@ -426,10 +403,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/test/data_in.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="16" selection-start-column="16" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/data_out.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="14" lean-forward="true" selection-start-column="14" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Trainer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="71">
-          <caret line="28" column="23" selection-start-line="28" selection-start-column="23" selection-end-line="28" selection-end-column="23" />
+        <state relative-caret-position="459">
+          <caret line="87" column="50" selection-start-line="87" selection-start-column="42" selection-end-line="87" selection-end-column="50" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#4159#4160#0" expanded="true" />

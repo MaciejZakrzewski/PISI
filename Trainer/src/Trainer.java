@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Trainer {
   private static String DELIMITER = " ";
-  private static double ALPHA = 0.01;
+  private static double ALPHA = 0.1;
 
   public static void main(String[] args) {
     String trainSetFileName = "";
@@ -65,10 +65,7 @@ public class Trainer {
         for (int j = 1; j < trainList.get(0).length; j++) {
           double average = countAverage(trainList, parameters, j);
           listToApply.add(average);
-          averageOfAverages += average;
         }
-
-        averageOfAverages /= trainList.get(0).length;
 
         double[] lastParam = parameters.get(parameters.size() - 1);
         lastParam[lastParam.length - 1] -= ALPHA * listToApply.get(0);
@@ -102,7 +99,6 @@ public class Trainer {
   private static void writeOutput(List<double[]> params, int n, int k, String outputFileName, int numOfIterations) {
     try (PrintWriter out = new PrintWriter(outputFileName)) {
       out.println("iterations=" + numOfIterations);
-      out.println();
 
     } catch (FileNotFoundException e) {
       e.printStackTrace();
