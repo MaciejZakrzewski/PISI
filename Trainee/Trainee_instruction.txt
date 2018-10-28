@@ -1,0 +1,63 @@
+Trainee
+Your task is to prepare a program that represents an polynomial of degree k in n dimensions. This program will be executed in the following way:
+
+program -d description.txt < in.txt > out.txt
+where descripion.txt describes the polynomial and in.txt and out.txt represent input and output of the polynomial, respectively. In the input file each line contains the input variables (n real numbers) separated with spaces. The output file should contain in each line corresponding value of the polynomial (one real number). The description file in its first line defines n and k. Next lines describe components of the polynomial where last real value represent the weighting parameter and first k integer values indicate which variables (from 0 to n) are taken into account in a considered compnent (0 means that no variable is considered).
+
+It should be assumed that all text files contain an empty line at the end of the file and that the Unix encoding of the end of line character is used. All the real values should use dot instead of comma as a decimal point separator.
+
+Sample input:
+
+description.txt
+2 2
+2 2 3.0
+2 1 2.0
+2 0 -1.0
+1 1 0.0
+1 0 5.0
+0 0 -1.0
+in.txt
+-1.0 0.0
+0.0 1.0
+1.0 2.0
+2.0 -3.0
+3.0 1.0
+Expected output:
+
+out.txt
+-6.0
+1.0
+18.0
+27.0
+22.0
+Program can be prepared using one of the approaches described below. The solution must be submitted as a single zip file which directly (without any unnecessary directory) contains source code and proper farm configuration file. Program will be compiled (if necessary) and executed in a directory where this zip file will be decompressed. No external dependecies are allowed (only the standard library should be used).
+
+Java RAW
+description	Java code may be composed of many java files organized in an arbitrary package structure (packages should be the only subdirectories of zip file). The farm file should specify the fully qualified name (with packages) of the class which contains main function.
+farm file
+type=java_raw
+# fully qualified name of the class representing trainee
+trainee="package.Trainee"
+environment	java 1.8.0_66
+compilation	javac -cp . *.java (for all the packages)
+execution	java -cp . $trainee -d description.txt < in.txt > out.txt
+
+C++ RAW
+description	C++ code can be composed of many source and header files. The only limitation is that all those files should be located in a main directory of zip file. The farm file should specify the source files required to build the program (one of them should contain main function).
+farm file
+type=cpp_raw
+# names of source files, separated with spaces, required to build a trainee
+trainee="trainee.cpp module.cpp"
+environment	g++ 4.8.1
+compilation	g++ -std=c++0x -o trainee $trainee
+execution	trainee -d description.txt < in.txt > out.txt
+
+Python RAW
+description	Python code should be composed of the scripts and modules organized in packages structure (packages should be the only subdirectories of zip file). The farm file should specify which script (in a main directory) should be executed as an actual program.
+farm file
+type=python_raw
+# name ot the python script file representing trainee
+trainee="trainee.py"
+environment	python 2.7.5+
+compilation	none
+execution	python $trainee -d description.txt < in.txt > out.txt
