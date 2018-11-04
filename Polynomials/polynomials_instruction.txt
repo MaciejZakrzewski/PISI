@@ -1,0 +1,152 @@
+Polynomials
+Your task is to prepare two helper programs that will allow to apply linear regression trainee and trainer in a task of polynomial regression:
+
+Converter
+The goal of this program is to prepare data allowing to convert problem of polynomial regression into a problem of linear regression. This requires generation of proper polynomial description and proper tansformation input vectors. That is why this program will be execued in two different ways:
+program -n dimesion -k degree > description.txt
+where dimension is a dimension of a space where polynomial will be approximated and degree is a degree of that polynomial. As an output the program should prepare description of such a polynomial with parameter values being random real number generated using uniform distribution from [-1,1] interval (format of this file was described in a previous tasks).
+
+Sample input:
+
+Command line arguments: dimension=2 and degree=2.
+
+Expected output:
+
+description.txt
+2 2
+2 2 0.2
+2 1 -0.1
+2 0 -0.5
+1 1 0.1
+1 0 0.4
+0 0 -0.1
+program -d description.txt < in.txt > out.txt
+where description.txt is a description of the polynomial, in.txt contains input vectors in space with n dimensions and out.txt contains input vectors in a space after transformation (its dimension depends on the number of not constant elements of the considered polynomial). The format of those files was described in a previous tasks.
+
+Sample input:
+
+description.txt
+1 2
+1 1 1
+1 0 -1
+0 0 0
+in.txt
+2.0
+3.1
+-1.2
+Expected output:
+
+out.txt
+4.0 2.0
+9.61 3.1
+1.44 -1.2
+Scaler
+The polynomials of higher degree for larger elements of input vectors can lead to a very high output values (and in consequence to very high values of the derivatives). As it may cause problems with numerical calculations a good idea is to scale all the input and output values to the [-1,1] interval. This on the one hand requires calculation of the minimum and maximum values for input vector elements (all the vectors in train, validation and/or test set should be considered) and on the other hend it requires to remember those values to be able to reverse the scaling. This is why this program will be execued in three different ways:
+
+program -a file1.txt [file2.txt ...] > data.txt
+where filei.txt are files which contains considered vectors (the number of columns is the same in all the files) and data.txt is a file that contains information that should be remembered to reverse scaling (the format of this file depends on the author of the program).
+
+Sample input:
+
+file1.txt
+-1.0 2.0
+2.0 1.0
+file2.txt
+-4.0 2.0
+Expected output:
+
+For the above input the data.txt file should allow to remember the minimum and maximum values of first (-4.0 and 2.0) and second (1.0 and 2.0) column.
+
+program -s data.txt < in.txt > out.txt
+where data.txt is a file with remembered minimum and maximum values, the in.txt contains vectors before scaling and out.txt should contain vectors after scaling.
+
+Sample input:
+
+data.txt
+File containing the minimum and maximum values of first (-4.0 and 2.0) and second (1.0 and 2.0) column.
+
+in.txt
+-1.0 2.0
+2.0 1.0
+Expected output:
+
+out.txt
+0.0 1.0
+1.0 -1.0
+program -u data.txt < in.txt > out.txt
+where data.txt is a file with remembered minimum and maximum values, the in.txt contains scaled vactors and out.txt should contain vectors after reverse scaling.
+
+Sample input:
+
+data.txt
+File containing the minimum and maximum values of first (-4.0 and 2.0) and second (1.0 and 2.0) column.
+
+in.txt
+0.0 1.0
+1.0 -1.0
+Expected output:
+
+out.txt
+-1.0 2.0
+2.0 1.0
+The submitted solution should contain accepted earlier Trainer and Trainee as well as Converter and Scaler.
+
+It should be assumed that all text files contain an empty line at the end of the file and that the Unix encoding of the end of line character is used. All the real values should use dot instead of comma as a decimal point separator.
+
+Programs can be prepared using one of the approaches described below. The solution must be submitted as a single zip file which directly (without any unnecessary directory) contains source code and proper farm configuration file. Program will be compiled (if necessary) and executed in a directory where this zip file will be decompressed. No external dependecies are allowed (only the standard library should be used).
+
+Java RAW
+description	Java code may be composed of many java files organized in an arbitrary package structure (packages should be the only subdirectories of zip file). The farm file should specify the fully qualified name (with packages) of the classes which contain main function.
+farm file	
+type=java_raw
+# fully qualified names of the classes representing trainee and trainer
+trainee="package.Trainee"
+trainer="package.Trainer"
+converter="package.Converter"
+scaler="package.Scaler"
+environment	java 1.8.0_66
+compilation	javac -cp . *.java (for all the packages)
+execution	
+java -cp . $converter -n dimesion -k degree > description.txt
+java -cp . $converter -d  description.txt < in.txt > out.txt
+java -cp . $scaler -a file1.txt [file2.txt ...] > data.txt
+java -cp . $scaler -s data.txt < in.txt > out.txt
+java -cp . $scaler -u data.txt < in.txt > out.txt
+
+C++ RAW
+description	C++ code can be composed of many source and header files. The only limitation is that all those files should be located in a main directory of zip file. The farm file should specify the soTrainerurce files required to build the programs (one of them should contain main function).
+farm file	
+type=cpp_raw
+# names of source files, separated with spaces, required to build trainee and trainer
+trainee="trainee.cpp module.cpp"
+trainer="trainer.cpp module.cpp"
+converter="converter.cpp module.cpp"
+scaler="scaler.cpp module.cpp"
+environment	g++ 4.8.1
+compilation	
+g++ -std=c++0x -o converter $converter
+g++ -std=c++0x -o scaler $scaler
+execution	
+converter -n dimesion -k degree > description.txt
+converter -d  description.txt < in.txt > out.txt
+scaler -a file1.txt [file2.txt ...] > data.txt
+scaler -s data.txt < in.txt > out.txt
+scaler -u data.txt < in.txt > out.txt
+
+Python RAW
+description	Python code should be composed of the scripts and modules organized in packages structure (packages should be the only subdirectories of zip file). The farm file should specify which scripts (in a main directory) should be executed as actual programs.
+farm file	
+type=python_raw
+# name ot the python script file representing trainee
+trainee="trainee.py"
+trainer="trainer.py"
+converter="converter.py"
+scaler="scaler.py"
+environment	python 2.7.5+
+compilation	none
+execution	
+python $converter -n dimesion -k degree > description.txt
+python $converter -d  description.txt < in.txt > out.txt
+python $scaler -a file1.txt [file2.txt ...] > data.txt
+python $scaler -s data.txt < in.txt > out.txt
+python $scaler -u data.txt < in.txt > out.txt
