@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -91,18 +89,27 @@ public class Converter {
                     parameters.add(inputParams);
                 }
 
-                description = description.stream().filter(x -> x[x.length - 1] != 0.0).collect(Collectors.toList());
+//                description = description
+//                        .stream()
+//                        .filter(x -> x.get(x.size() - 1) != 0.0)
+//                        .collect(Collectors.toList());
+
+                description = description
+                        .stream()
+                        .filter(x -> x[x.length - 1] != 0.0).collect(Collectors.toList());
+
+                description.remove(description.size() - 1);
 
                 List<List<Double>> output = new ArrayList<>();
 
-                for (List<Double> params: parameters) {
+                for (List<Double> params : parameters) {
                     List<Double> result = new ArrayList<>();
-
-                    for (double[] descArray: description) {
+                    for (double[] descArray : description) {
                         double value = 1.0;
-
-                        for (int i = 0; i < descArray.length; i++) {
-                            value *= params.get(i);
+                        for (int i = 0; i < descArray.length - 1; i++) {
+                            if (descArray[i] != 0.0) {
+                                value *= params.get(new Double(descArray[i] - 1).intValue());
+                            }
                         }
                         result.add(value);
                     }
@@ -111,6 +118,7 @@ public class Converter {
 
                 displayConvertedInput(output);
 
+                bufferedReader.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -135,10 +143,37 @@ public class Converter {
     private static void displayConvertedInput(List<List<Double>> converted) {
         for (List<Double> outList : converted) {
             StringBuilder toDisplay = new StringBuilder();
-            for (Double out: outList) {
+            for (Double out : outList) {
                 toDisplay.append(out).append(DELIMITER);
             }
             System.out.println(toDisplay);
         }
+    }
+
+    public static List<List<Integer>> readDescriptionForConversion(String descriptionFileName) throws IOException {
+        File file = new File(descriptionFileName);
+
+        BufferedReader br = new BufferedReader(new FileReader(file));
+
+        String st;
+
+        br.readLine();
+
+        List<List<Integer>> parameters = new ArrayList<>();
+
+        while ((st = br.readLine()) != null) {
+            List<Integer> params = new ArrayList<>();
+            String[] split = st.split(DELIMITER);
+
+            for (int i = 0; i < split.length - 1; i++) {
+                params.add(Integer.valueOf(split[i]));
+            }
+
+            parameters.add(params);
+        }
+
+        br.close();
+
+        return parameters;
     }
 }
