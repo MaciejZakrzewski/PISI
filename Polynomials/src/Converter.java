@@ -76,7 +76,7 @@ public class Converter {
 
         } else if (descriptionFileName != null) {
             try {
-                List<double[]> description = Trainee.readDescription(descriptionFileName);
+                List<List<Integer>> description = readDescriptionForConversion(descriptionFileName);
 
                 List<List<Double>> parameters = new ArrayList<>();
 
@@ -89,26 +89,17 @@ public class Converter {
                     parameters.add(inputParams);
                 }
 
-//                description = description
-//                        .stream()
-//                        .filter(x -> x.get(x.size() - 1) != 0.0)
-//                        .collect(Collectors.toList());
-
-                description = description
-                        .stream()
-                        .filter(x -> x[x.length - 1] != 0.0).collect(Collectors.toList());
-
                 description.remove(description.size() - 1);
 
                 List<List<Double>> output = new ArrayList<>();
 
                 for (List<Double> params : parameters) {
                     List<Double> result = new ArrayList<>();
-                    for (double[] descArray : description) {
+                    for (List<Integer> descArray : description) {
                         double value = 1.0;
-                        for (int i = 0; i < descArray.length - 1; i++) {
-                            if (descArray[i] != 0.0) {
-                                value *= params.get(new Double(descArray[i] - 1).intValue());
+                        for (Integer aDescArray : descArray) {
+                            if (aDescArray != 0) {
+                                value *= params.get(aDescArray - 1);
                             }
                         }
                         result.add(value);
@@ -150,7 +141,7 @@ public class Converter {
         }
     }
 
-    public static List<List<Integer>> readDescriptionForConversion(String descriptionFileName) throws IOException {
+    private static List<List<Integer>> readDescriptionForConversion(String descriptionFileName) throws IOException {
         File file = new File(descriptionFileName);
 
         BufferedReader br = new BufferedReader(new FileReader(file));
@@ -166,7 +157,9 @@ public class Converter {
             String[] split = st.split(DELIMITER);
 
             for (int i = 0; i < split.length - 1; i++) {
-                params.add(Integer.valueOf(split[i]));
+                if (Double.valueOf(split[split.length - 1]) != 0.0) {
+                    params.add(Integer.valueOf(split[i]));
+                }
             }
 
             parameters.add(params);
