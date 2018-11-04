@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cfb22b28-be56-47ac-9dea-841aff624dd4" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/Converter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Converter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Converter.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/Converter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/description.txt" beforeDir="false" afterPath="$PROJECT_DIR$/test/description.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/out.txt" beforeDir="false" afterPath="$PROJECT_DIR$/test/out.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Scaler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Trainer/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Trainer/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -58,20 +55,11 @@
       <file leaf-file-name="Trainee.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Trainee.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="92">
-              <caret line="61" column="2" selection-start-line="61" selection-start-column="2" selection-end-line="81" selection-end-column="3" />
+            <state relative-caret-position="296">
+              <caret line="73" column="6" lean-forward="true" selection-start-line="73" selection-start-column="6" selection-end-line="73" selection-end-column="102" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Trainer.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Trainer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret line="55" selection-start-line="55" selection-end-line="55" />
             </state>
           </provider>
         </entry>
@@ -85,11 +73,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Converter.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Converter.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Converter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="172">
-              <caret line="98" column="59" selection-start-line="98" selection-start-column="59" selection-end-line="98" selection-end-column="59" />
+            <state relative-caret-position="-2220">
+              <caret line="11" column="44" lean-forward="true" selection-start-line="11" selection-start-column="44" selection-end-line="11" selection-end-column="44" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#4581#4582#0" expanded="true" />
@@ -102,8 +90,20 @@
       <file leaf-file-name="out.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/out.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
+            <state relative-caret-position="51">
+              <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Scaler.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/Scaler.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="472">
+              <caret line="67" column="19" lean-forward="true" selection-start-line="67" selection-start-column="19" selection-end-line="67" selection-end-column="19" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -176,6 +176,7 @@
         <option value="$PROJECT_DIR$/run.bat" />
         <option value="$PROJECT_DIR$/test/in.txt" />
         <option value="$PROJECT_DIR$/src/Converter.java" />
+        <option value="$PROJECT_DIR$/src/Scaler.java" />
       </list>
     </option>
   </component>
@@ -276,12 +277,12 @@
       <updated>1541258634336</updated>
       <workItem from="1541258635731" duration="11748000" />
       <workItem from="1541279978053" duration="5304000" />
-      <workItem from="1541353412587" duration="1932000" />
+      <workItem from="1541353412587" duration="6392000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="18984000" />
+    <option name="totallyTimeSpent" value="23444000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -440,20 +441,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Trainee.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="92">
-          <caret line="61" column="2" selection-start-line="61" selection-start-column="2" selection-end-line="81" selection-end-column="3" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/test/in.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
           <caret line="3" selection-start-line="3" selection-end-line="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/out.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
         </state>
       </provider>
     </entry>
@@ -464,21 +462,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/out.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Converter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="172">
-          <caret line="98" column="59" selection-start-line="98" selection-start-column="59" selection-end-line="98" selection-end-column="59" />
+        <state relative-caret-position="-2220">
+          <caret line="11" column="44" lean-forward="true" selection-start-line="11" selection-start-column="44" selection-end-line="11" selection-end-column="44" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#4581#4582#0" expanded="true" />
             <element signature="e#4647#4648#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Trainee.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="296">
+          <caret line="73" column="6" lean-forward="true" selection-start-line="73" selection-start-column="6" selection-end-line="73" selection-end-column="102" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Scaler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="472">
+          <caret line="67" column="19" lean-forward="true" selection-start-line="67" selection-start-column="19" selection-end-line="67" selection-end-column="19" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>

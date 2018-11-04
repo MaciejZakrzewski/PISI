@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="07930fa1-4880-4b25-9217-ee37db7902f3" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/../Polynomials/src/Scaler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Polynomials/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Polynomials/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Polynomials/src/Converter.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Polynomials/src/Converter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Polynomials/test/Converter.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Polynomials/test/Converter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Polynomials/test/description.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Polynomials/test/description.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Polynomials/test/out.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Polynomials/test/out.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
