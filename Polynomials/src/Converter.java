@@ -1,13 +1,15 @@
 import java.io.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class Converter {
     private static String DELIMITER = " ";
+    private static final Random random = new Random();
 
     public static void main(String[] args) {
         Integer dimensions = null;
@@ -91,15 +93,15 @@ public class Converter {
 
                 description.remove(description.size() - 1);
 
-                List<List<Double>> output = new ArrayList<>();
+                List<List<BigDecimal>> output = new ArrayList<>();
 
                 for (List<Double> params : parameters) {
-                    List<Double> result = new ArrayList<>();
+                    List<BigDecimal> result = new ArrayList<>();
                     for (List<Integer> descArray : description) {
-                        double value = 1.0;
+                        BigDecimal value = BigDecimal.ONE;
                         for (Integer aDescArray : descArray) {
                             if (aDescArray != 0) {
-                                value *= params.get(aDescArray - 1);
+                                value = value.multiply(BigDecimal.valueOf(params.get(aDescArray - 1)));
                             }
                         }
                         result.add(value);
@@ -127,18 +129,22 @@ public class Converter {
 
     private static void populateWithParameters(List<List<Double>> result) {
         for (List<Double> aResult : result) {
-            aResult.add(roundToFirstDecimalPlace(ThreadLocalRandom.current().nextDouble(-1, 1)));
+            aResult.add(random.nextDouble() * 2.0 - 1.0);
         }
     }
 
-    private static void displayConvertedInput(List<List<Double>> converted) {
-        for (List<Double> outList : converted) {
+    private static void displayConvertedInput(List<List<BigDecimal>> converted) {
+        for (List<BigDecimal> outList : converted) {
             StringBuilder toDisplay = new StringBuilder();
-            for (Double out : outList) {
+            for (BigDecimal out : outList) {
                 toDisplay.append(out).append(DELIMITER);
             }
             System.out.println(toDisplay);
         }
+    }
+
+    private static boolean isIntegerValue(BigDecimal bd) {
+        return bd.stripTrailingZeros().scale() <= 0;
     }
 
     private static List<List<Integer>> readDescriptionForConversion(String descriptionFileName) throws IOException {

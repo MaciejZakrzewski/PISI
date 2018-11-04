@@ -1,3 +1,5 @@
 type=java_raw
 trainee="Trainee"
 trainer="Trainer"
+converter="Converter"
+scaler="Scaler"
