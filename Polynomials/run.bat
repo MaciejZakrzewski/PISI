@@ -2,6 +2,7 @@ cd src
 xcopy /Y . ..\test
 cd ..\test
 javac -cp . *.java
-java -cp . Converter -n 1 -k 2 > description.txt
-java -cp . Converter -d description.txt < in.txt > out.txt
+java -cp . Scaler -a file1.txt file2.txt > data.txt
+java -cp . Scaler -s data.txt < in.txt > out.txt
+java -cp . Scaler -u data.txt < out.txt > out2.txt
 cd ..
