@@ -1,0 +1,103 @@
+Validator
+Your task is to prepare a program that will allow to select the proper degree of the polynomial (hyperparameter) correctly approximating (allowing to generalize) given data using some cross-validation procedure. To accomplish this task it should among others allow to split available data into training and validation sets as well as be able to evaluate the quality of the trained polynomial. The program will be executed in three different ways:
+
+program -g set.txt -d out > splits
+where set.txt contains whole available knowledge that can be used to select parameters and hyperparameters (input and expected output in each line). As an output one integer value splits>1 representing number of data set splits should be produced. In the out directory pairs of files containing training and validation sets, i.e. splits of set.txt, should be saved. The names of the saved files should be: training_set1.txt and validation_set1.txt, training_set2.txt and validation_set2.txt, etc.
+
+Sample input:
+
+set.txt
+-1.0 -2.0
+2.0 4.0
+1.0 2.0
+-3.0 6.0
+Expected output:
+
+It depends on the assumed data splitting method. If 2-fold cross-validation or repeated random subsampling with 2 random splits are considered it should produce splits=2. The number of saved files in out directory should be related with the number of splits. Of course, the data combined from corresponding training and validation sets should give the same data that are conatined in set.txt.
+
+program -e validation_set.txt < out.txt > evalutaion
+where validation_set.txt will contain one of the previously generated validation sets and the out.txt will contain the output values of the polynomial trained with corresponding training set for inputs from validation set. As a result program should produce one real number evaluation representing the evalution of the trained polynomial. This program will be executed many times for trained polynomials of different degree.
+
+Sample input:
+
+validation_set.txt
+1.0 2.0
+-3.0 6.0
+out.txt
+1.9
+6.2
+Expected output:
+
+The obtained evaluation value depends on the assumed evaluation procedure.
+
+program -v evaluation.txt > hyperparameter
+where evaluation.txt will contain information about evaluation values for different polynomial degrees and different pairs of training and validations sets. Each row correspond to one hyperparameter value. In each row first the hyperparameter (polynomial degree) and than evaluations (for pairs of training and validations sets) will be specified and separated with spaces. The program, basing on information in evaluation.txt should select optimal value of hyperparameter and produce this optimal value as its output. To be precise it should produce the first value of the row which was selected as an optimal one.
+
+Sample input:
+
+evalution.txt
+1 0.5 0.7
+2 0.4 0.3
+3 0.1 0.9
+4 0.2 0.3
+5 0.1 0.7
+Expected output:
+
+If in the assaumed evaluation procedure the smaller values are better and the mean average is selected as an aggregation procedure here (for 2 splits) the expected output value (degree of the polynomial) should be hyperparameter=4.
+
+The submitted solution should contain accepted earlier Trainer, Trainee, Converter and Scaler as well as Validator.
+
+It should be assumed that all text files contain an empty line at the end of the file and that the Unix encoding of the end of line character is used. All the real values should use dot instead of comma as a decimal point separator.
+
+Programs can be prepared using one of the approaches described below. The solution must be submitted as a single zip file which directly (without any unnecessary directory) contains source code and proper farm configuration file. Program will be compiled (if necessary) and executed in a directory where this zip file will be decompressed. No external dependecies are allowed (only the standard library should be used).
+
+Java RAW
+description	Java code may be composed of many java files organized in an arbitrary package structure (packages should be the only subdirectories of zip file). The farm file should specify the fully qualified name (with packages) of the classes which contain main function.
+farm file
+type=java_raw
+# fully qualified names of the classes representing trainee, trainer, etc.
+trainee="package.Trainee"
+trainer="package.Trainer"
+converter="package.Converter"
+scaler="package.Scaler"
+validator="package.Validator"
+environment	java 1.8.0_66
+compilation	javac -cp . *.java (for all the packages)
+execution
+java -cp . $validator -g set.txt -d out > splits
+java -cp . $validator -e validation_set.txt < out.txt > evalutaion
+java -cp . $validator -v evaluation.txt > hyperparameter
+
+C++ RAW
+description	C++ code can be composed of many source and header files. The only limitation is that all those files should be located in a main directory of zip file. The farm file should specify the soTrainerurce files required to build the programs (one of them should contain main function).
+farm file
+type=cpp_raw
+# names of source files, separated with spaces, required to build trainee, trainer, etc.
+trainee="trainee.cpp module.cpp"
+trainer="trainer.cpp module.cpp"
+converter="converter.cpp module.cpp"
+scaler="scaler.cpp module.cpp"
+validator="validator.cpp module.cpp"
+environment	g++ 4.8.1
+compilation	g++ -std=c++0x -o validator $validator
+execution
+validator -g set.txt -d out > splits
+validator -e validation_set.txt < out.txt > evalutaion
+validator -v evaluation.txt > hyperparameter
+
+Python RAW
+description	Python code should be composed of the scripts and modules organized in packages structure (packages should be the only subdirectories of zip file). The farm file should specify which scripts (in a main directory) should be executed as actual programs.
+farm file
+type=python_raw
+# name ot the python script file representing trainee, trainer, etc
+trainee="trainee.py"
+trainer="trainer.py"
+converter="converter.py"
+scaler="scaler.py"
+validator="validator.py"
+environment	python 2.7.5+
+compilation	none
+execution
+python $validator -g set.txt -d out > splits
+python $validator -e validation_set.txt < out.txt > evalutaion
+python $validator -v evaluation.txt > hyperparameter
