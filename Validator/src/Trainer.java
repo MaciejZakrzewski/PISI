@@ -124,10 +124,18 @@ public class Trainer {
 
     List<double[]> parameters = new ArrayList<>();
 
-    while ((st = br.readLine()) != null) {
-      double[] params = Arrays.stream(st.split(DELIMITER)).mapToDouble(Double::parseDouble).toArray();
+    while ((st = br.readLine()) != null && !st.isEmpty()) {
+      String[] splits = st.split(DELIMITER);
+      List<Double> toAdd = new ArrayList<>();
+      for (String split : splits) {
+        if (split != null && !split.isEmpty()) {
+          toAdd.add(Double.valueOf(split));
+        }
+      }
 
-      parameters.add(params);
+      double[] target = toAdd.stream().mapToDouble(Double::doubleValue).toArray();
+
+      parameters.add(target);
     }
 
     br.close();

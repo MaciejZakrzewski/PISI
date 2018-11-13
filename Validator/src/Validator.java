@@ -3,7 +3,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class Validator {
@@ -36,16 +35,20 @@ public class Validator {
             try {
                 List<List<Double>> set = readSet(setFileName);
 
-                Collections.shuffle(set);
-                List<List<List<Double>>> dividedSet = chunk(set, set.size() / K_FOLD);
-
+                int help = 0;
+                int chunkSize = set.size() / K_FOLD;
                 int counter = 1;
-                for (List<List<Double>> x : dividedSet) {
-                    List<List<List<Double>>> trainingSet = dividedSet.stream().filter(y -> !y.equals(x)).collect(Collectors.toList());
+                for (int i = 0; i < K_FOLD; i++) {
+                    List<List<Double>> setCopy = new ArrayList<>(set);
+                    List<List<Double>> validation = set.subList(help, help + chunkSize);
 
-                    saveValidationToFile(x, trainingSet, outputDirectory, counter);
+                    for (int j = help; j < help + chunkSize; j++) {
+                        setCopy.remove(help);
+                    }
 
+                    saveValidationToFile(validation, setCopy, outputDirectory, counter);
                     counter++;
+                    help += chunkSize;
                 }
 
                 System.out.println(K_FOLD);
@@ -94,19 +97,6 @@ public class Validator {
         }
     }
 
-//    private static void evaluate(List<List<Double>> validationSet, List<Double> output) {
-//        BigDecimal result = new BigDecimal(0);
-//        for (int i = 0; i < output.size(); i++) {
-//            BigDecimal expected = new BigDecimal(validationSet.get(i).get(validationSet.get(i).size() - 1));
-//            BigDecimal actual = new BigDecimal(output.get(i));
-//            actual = actual.subtract(expected);
-//            actual = actual.pow(2);
-//            result = result.add(actual);
-//        }
-//        result = result.divide(new BigDecimal(output.size()));
-//        System.out.println(result);
-//    }
-
     private static void evaluate(List<List<Double>> validationSet, List<Double> output) {
         double result = 0;
         for (int i = 0; i < output.size(); i++) {
@@ -116,40 +106,7 @@ public class Validator {
         System.out.println(result / output.size());
     }
 
-    private static <T> Collection<List<T>> partition(List<T> list, int size) {
-        final AtomicInteger counter = new AtomicInteger(0);
-
-        return list.stream()
-                .collect(Collectors.groupingBy(it -> counter.getAndIncrement() / size))
-                .values();
-    }
-
-    private static <T> List<List<T>> chunk(List<T> input, int chunkSize) {
-        int inputSize = input.size();
-        int chunkCount = (int) Math.ceil(inputSize / (double) chunkSize);
-
-        Map<Integer, List<T>> map = new HashMap<>(chunkCount);
-        List<List<T>> chunks = new ArrayList<>(chunkCount);
-
-        for (int i = 0; i < inputSize; i++) {
-
-            map.computeIfAbsent(i / chunkSize, (ignore) -> {
-
-                List<T> chunk = new ArrayList<>();
-                chunks.add(chunk);
-                return chunk;
-
-            }).add(input.get(i));
-        }
-
-        return chunks;
-    }
-
-    private static void saveValidationToFile(List<List<Double>> validationSet, List<List<List<Double>>> trainingSet, String directory, int numberOfSet) throws IOException {
-        List<List<Double>> joinedTrainingSet = new ArrayList<>();
-
-        trainingSet.forEach(joinedTrainingSet::addAll);
-
+    private static void saveValidationToFile(List<List<Double>> validationSet, List<List<Double>> trainingSet, String directory, int numberOfSet) throws IOException {
         Path path = Paths.get(directory);
 
         if (!Files.exists(path)) {
@@ -160,13 +117,20 @@ public class Validator {
         String trainingSetPath = directory + "/training_set" + numberOfSet + ".txt";
 
         generateFileAndSave(validationSet, validationSetPath);
-        generateFileAndSave(joinedTrainingSet, trainingSetPath);
+        generateFileAndSave(trainingSet, trainingSetPath);
     }
 
     private static void generateFileAndSave(List<List<Double>> set, String path) throws IOException {
         StringBuilder result = new StringBuilder();
         for (List<Double> x : set) {
-            result.append(String.join(DELIMITER, x.stream().map(String::valueOf).collect(Collectors.toList()))).append(System.lineSeparator());
+            for (int i = 0; i < x.size(); i++) {
+                result.append(x.get(i));
+                if (i != x.size() - 1) {
+                    result.append(DELIMITER);
+                } else {
+                    result.append("\n");
+                }
+            }
         }
 
         BufferedWriter bw = new BufferedWriter(new FileWriter(new File(path)));
