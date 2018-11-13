@@ -1,5 +1,4 @@
 import java.io.*;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -49,7 +48,7 @@ public class Validator {
                     counter++;
                 }
 
-                System.out.println("splits=" + K_FOLD);
+                System.out.println(K_FOLD);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -88,24 +87,36 @@ public class Validator {
 
                 Integer hyper = result.entrySet().stream().sorted(Map.Entry.comparingByValue()).collect(Collectors.toList()).get(0).getKey();
 
-                System.out.println("hyperparameter=" + hyper);
+                System.out.println(hyper);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
+//    private static void evaluate(List<List<Double>> validationSet, List<Double> output) {
+//        BigDecimal result = new BigDecimal(0);
+//        for (int i = 0; i < output.size(); i++) {
+//            BigDecimal expected = new BigDecimal(validationSet.get(i).get(validationSet.get(i).size() - 1));
+//            BigDecimal actual = new BigDecimal(output.get(i));
+//            actual = actual.subtract(expected);
+//            actual = actual.pow(2);
+//            result = result.add(actual);
+//        }
+//        result = result.divide(new BigDecimal(output.size()));
+//        System.out.println(result);
+//    }
+
     private static void evaluate(List<List<Double>> validationSet, List<Double> output) {
+        double result = 0;
         for (int i = 0; i < output.size(); i++) {
-            BigDecimal expected = new BigDecimal(validationSet.get(i).get(validationSet.get(i).size() - 1));
-            BigDecimal actual = new BigDecimal(output.get(i));
-            actual = actual.subtract(expected);
-            actual = actual.pow(2);
-            System.out.println(actual);
+            double toAdd = Math.pow((validationSet.get(i).get(validationSet.get(i).size() - 1) - output.get(i)), 2);
+            result += toAdd;
         }
+        System.out.println(result / output.size());
     }
 
-    private static  <T> Collection<List<T>> partition(List<T> list, int size) {
+    private static <T> Collection<List<T>> partition(List<T> list, int size) {
         final AtomicInteger counter = new AtomicInteger(0);
 
         return list.stream()
