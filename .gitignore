@@ -161,3 +161,5 @@ $RECYCLE.BIN/
 # End of https://www.gitignore.io/api/java,linux,maven,windows,intellij
 out/
 test/
+*.iml
+*.xml
