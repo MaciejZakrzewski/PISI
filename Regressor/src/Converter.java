@@ -103,7 +103,8 @@ public class Converter {
                 Double value = 1d;
                 for (Integer aDescArray : descArray) {
                     if (aDescArray != 0) {
-                        value *= params.get(aDescArray - 1);
+                        // TODO fix generation
+                        value *= params.size() != 1 ? params.get(params.size() - 1 - aDescArray) : params.get(0);
                     }
                 }
                 result.add(value);
