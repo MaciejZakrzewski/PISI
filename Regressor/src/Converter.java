@@ -1,9 +1,6 @@
 import java.io.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Converter {
@@ -103,12 +100,12 @@ public class Converter {
                 Double value = 1d;
                 for (Integer aDescArray : descArray) {
                     if (aDescArray != 0) {
-                        // TODO fix generation
-                        value *= params.size() != 1 ? params.get(params.size() - 1 - aDescArray) : params.get(0);
+                        value *= params.get(aDescArray - 1);
                     }
                 }
                 result.add(value);
             }
+            Collections.reverse(result);
             output.add(result);
         }
         return output;

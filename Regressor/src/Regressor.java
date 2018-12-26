@@ -9,6 +9,7 @@ public class Regressor {
     private static final String DELIMITER = " ";
     private static final String TR_SET = "trainings";
     private static final String VAL_SET = "validations";
+    private static final int MAX_NUM_OF_ITER = 1000;
 
     public static void main(String[] args) {
         String setFileName = null;
@@ -47,25 +48,25 @@ public class Regressor {
                     List<List<Double>> linearPolynomial = mapGeneratedPolynomialToLinearPolynomial(generatedPolynomial);
                     preparedIntegerPolynomialsMap.put(i, preparedPol);
                     if (i != 1) {
-                        output = Converter.convertInputForRegressor(preparedPol, trAndVal.get(TR_SET).get(0));
-                        output = populateWithExpectedValues(output, trAndVal.get(TR_SET).get(0));
+                        output = Converter.convertInputForRegressor(preparedPol, trAndVal.get(TR_SET).get(1));
+                        output = populateWithExpectedValues(output, trAndVal.get(TR_SET).get(1));
                     } else {
                         output = trAndVal.get(TR_SET).get(0);
                     }
 
-                    int actualNumOfIterations = Trainer.trainForRegressor(output, 10000, linearPolynomial);
+                    int actualNumOfIterations = Trainer.trainForRegressor(output, MAX_NUM_OF_ITER, linearPolynomial);
 
-                    List<Double> trainingSetOutputs = new ArrayList<>();
+                    List<Double> trainingSetOutputs = getTrainingSetOutputs(output, linearPolynomial);
 
-                    output.forEach(x -> trainingSetOutputs.add(Trainee.getResult(linearPolynomial, x)));
-
-                    List<List<Double>> preparedValAfterTrain = Converter.convertInputForRegressor(preparedPol, trAndVal.get(VAL_SET).get(0));
+                    List<List<Double>> preparedValAfterTrain = Converter.convertInputForRegressor(preparedPol, trAndVal.get(VAL_SET).get(1));
 
                     List<Double> validationSetOutputs = new ArrayList<>();
 
                     preparedValAfterTrain.forEach(x -> validationSetOutputs.add(Trainee.getResult(linearPolynomial, x)));
 
                     double trainingSetEvaluation = Validator.getEvaluationResult(output, trainingSetOutputs);
+
+                    preparedValAfterTrain = populateWithExpectedValues(preparedValAfterTrain, trAndVal.get(VAL_SET).get(1));
 
                     double validationSetEvaluation = Validator.getEvaluationResult(preparedValAfterTrain, validationSetOutputs);
 
@@ -93,13 +94,12 @@ public class Regressor {
 
                 List<List<Double>> minAndMaxForTestInputs = Scaler.getMinAndMax(Scaler.transposeMatrix(inputs));
 
-                scaleSet(inputs, minAndMaxForTestInputs);
+                scaleSet(inputs, minAndMax);
 
                 List<List<Double>> preparedTests;
 
                 if (hyper != 1) {
                     preparedTests = Converter.convertInputForRegressor(preparedIntegerPolynomialsMap.get(hyper), inputs);
-                    preparedTests = populateWithExpectedValues(preparedTests, inputs);
                 } else {
                     preparedTests = inputs;
                 }
@@ -115,6 +115,20 @@ public class Regressor {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static List<Double> getTrainingSetOutputs(List<List<Double>> output, List<List<Double>> linearPolynomial) {
+        List<Double> trainingSetOutputs = new ArrayList<>();
+
+        output.forEach(x -> {
+            List<Double> tmp = new ArrayList<>(x);
+
+            tmp.remove(tmp.size() - 1);
+
+            trainingSetOutputs.add(Trainee.getResult(linearPolynomial, tmp));
+        });
+
+        return trainingSetOutputs;
     }
 
     public static void rescale(List<Double> results, List<Double> minAndMax) {
@@ -173,7 +187,7 @@ public class Regressor {
             output = set;
         }
 
-        Trainer.trainForRegressor(output, 10000, linearPolynomial);
+        Trainer.trainForRegressor(output, MAX_NUM_OF_ITER, linearPolynomial);
 
         return linearPolynomial;
     }
@@ -181,6 +195,14 @@ public class Regressor {
     private static List<List<Double>> populateWithExpectedValues(List<List<Double>> output, List<List<Double>> trainingSet) {
         for (int i = 0; i < output.size(); i++) {
             output.get(i).add(trainingSet.get(i).get(trainingSet.get(i).size() - 1));
+        }
+
+        return output;
+    }
+
+    private static List<List<Double>> removeExpectedValues(List<List<Double>> output) {
+        for (List<Double> anOutput : output) {
+            anOutput.remove(anOutput.size() - 1);
         }
 
         return output;
