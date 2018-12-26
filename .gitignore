@@ -163,3 +163,5 @@ out/
 test/
 *.iml
 *.xml
+
+venv/
