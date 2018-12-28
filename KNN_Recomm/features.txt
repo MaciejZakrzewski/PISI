@@ -1,0 +1,10 @@
+Features:
+    1. Collection
+    2. Budget
+    3. Genres
+    4. Popularity
+    5. Production companies
+    6. Production countries
+    7. Original language
+    8. Vote average
+    9. Release date

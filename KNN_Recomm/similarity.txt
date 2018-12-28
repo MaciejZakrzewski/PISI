@@ -1,0 +1,10 @@
+All features, described in features.txt, are compared between evaluated movie and training set movie.
+    1. Collection - check if evaluated movie belongs to collection from training set. If not the distance is increased by 1.
+    2. Budget - check if evaluated movie budget is in range: (0.9 * training movie's budget, 1.1 * training movie's budget). If not the distance is increased by 0.8
+    3. Genres - check if genres collection of evaluated movie is contained by training movie's collection. If not the distance is increased by 1
+    4. Popularity - check if evaluated movie popularity is in range: (0.85 * training movie's popularity, 1.15 * training movie's popularity). If not the distance is increased by 0.8
+    5. Production companies - check if companies collection of evaluated movie is contained by training movie's collection. If not the distance is increased by 1 for every single miss
+    6. Production countries - same as production companies, but the distance is increased by 0.5
+    7. Original language - compare language. If they are different - increase distance by 1
+    8. Vote average - check if evaluated movie average is in range: (training movie's average - 0.5, training movie's average + 0.5). If not the distance is increased by 0.8
+    9. Release date - check if evaluated movie year is in range: (training movie's year - 10, training movie's year + 10). If not the distance is increased by 0.8

@@ -3,6 +3,7 @@ import csv
 import redis
 import pickle
 import operator
+import arrow
 
 tmdb.API_KEY = '852eabf1faf621f417234193b0ca6f95'
 K = 5
@@ -45,14 +46,14 @@ def prepare_movies_map(movies):
     return movies_dict
 
 
-def prepare_map(list):
+def prepare_map(list_to_refactor):
     person_id_list = dict()
 
-    for row in list:
+    for row in list_to_refactor:
         if row[1] not in person_id_list:
             person_id_list[row[1]] = []
 
-    for row in list:
+    for row in list_to_refactor:
         x = person_id_list[row[1]]
         x.append((row[2], row[3]))
         person_id_list[row[1]] = x
@@ -60,7 +61,7 @@ def prepare_map(list):
     return person_id_list
 
 
-def evaluate_based_on_knn(movies_map, movies_info, task_tuple, training_list):
+def evaluate_based_on_knn(movies_info, task_tuple, training_list):
     evaluated_movie = movies_info[task_tuple[0]]
 
     evaluated_movie_collection = evaluated_movie['belongs_to_collection']
@@ -70,6 +71,7 @@ def evaluate_based_on_knn(movies_map, movies_info, task_tuple, training_list):
     for tr_tup in training_list:
         if tr_tup[0] not in nearest_dict:
             nearest_dict[tr_tup[0]] = 0
+
         if evaluated_movie_collection is not None:
             if movies_info[tr_tup[0]]['belongs_to_collection'] is not None:
                 if evaluated_movie_collection['id'] != movies_info[tr_tup[0]]['belongs_to_collection']['id']:
@@ -77,12 +79,41 @@ def evaluate_based_on_knn(movies_map, movies_info, task_tuple, training_list):
             else:
                 nearest_dict[tr_tup[0]] += 1
 
-    sorted_nearest_dict = sorted(nearest_dict.items(), key=operator.itemgetter(0))[:K]
+        if (evaluated_movie['budget'] * 0.9 > movies_info[tr_tup[0]]['budget']) or (movies_info[tr_tup[0]]['budget'] > evaluated_movie['budget'] * 1.1):
+            nearest_dict[tr_tup[0]] += 0.8
+
+        for genre in evaluated_movie['genres']:
+            if genre not in movies_info[tr_tup[0]]['genres']:
+                nearest_dict[tr_tup[0]] += 1
+
+        if (evaluated_movie['popularity'] * 0.85 > movies_info[tr_tup[0]]['popularity']) or (movies_info[tr_tup[0]]['popularity'] > evaluated_movie['popularity'] * 1.15):
+            nearest_dict[tr_tup[0]] += 0.8
+
+        for company in evaluated_movie['production_companies']:
+            if company not in movies_info[tr_tup[0]]['production_companies']:
+                nearest_dict[tr_tup[0]] += 1
+
+        for country in evaluated_movie['production_countries']:
+            if country not in movies_info[tr_tup[0]]['production_countries']:
+                nearest_dict[tr_tup[0]] += 0.5
+
+        if evaluated_movie['original_language'] != movies_info[tr_tup[0]]['original_language']:
+            nearest_dict[tr_tup[0]] += 1
+
+        if (evaluated_movie['vote_average'] - 0.5 > movies_info[tr_tup[0]]['vote_average']) or (movies_info[tr_tup[0]]['vote_average'] + 0.5 > evaluated_movie['vote_average']):
+            nearest_dict[tr_tup[0]] += 0.8
+
+        movie_date = arrow.get(evaluated_movie['release_date'], 'YYYY-MM-DD').date()
+        compared_date = arrow.get(movies_info[tr_tup[0]]['release_date'], 'YYYY-MM-DD').date()
+
+        if (movie_date.year - 10 > compared_date.year) or (compared_date.year + 10 > movie_date.year):
+            nearest_dict[tr_tup[0]] += 0.8
+
+    sorted_nearest_dict = sorted(nearest_dict.items(), key=operator.itemgetter(1))[:K]
 
     result = 0
 
     for s in sorted_nearest_dict:
-        test = next(x for x in training_list if x[0] == s[0])
         result += int(next(x for x in training_list if x[0] == s[0])[1])
 
     return str(int(round(result / K)))
@@ -107,6 +138,7 @@ def convert_task_map_to_list(task_map, task_list):
 
     return result
 
+
 def main():
     training = read_csv('train.csv')
 
@@ -118,8 +150,6 @@ def main():
 
     task_map = prepare_map(task)
 
-    movies_map = prepare_movies_map(movies)
-
     movies_info = cache_movies(movies)
 
     for person in task_map:
@@ -128,13 +158,13 @@ def main():
         tr = training_map[person]
 
         for tupl in p:
-            result.append((tupl[0], evaluate_based_on_knn(movies_map, movies_info, tupl, tr)))
+            result.append((tupl[0], evaluate_based_on_knn(movies_info, tupl, tr)))
 
         task_map[person] = result
 
     to_save = convert_task_map_to_list(task_map, task)
-    write_csv('task.csv', to_save)
-    print('asd')
+    write_csv('submission.csv', to_save)
+    print('DONE')
 
 
 if __name__ == '__main__':
