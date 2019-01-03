@@ -1,0 +1,5 @@
+The similarity measure is as follows:
+    1. Pick person from task.csv
+    2. Compare his films ratings from train.csv with other people ratings
+        (count the absolute difference of ratings, if there is no rating for compared person -> add "5" which is the biggest possible distance between ratings)
+    3. Sort (the smaller distance, the better)

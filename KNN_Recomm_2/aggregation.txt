@@ -1,0 +1,4 @@
+For every missing rating:
+    1. Take 5 people with the most similar taste to the person who is considered.
+    2. Check in train data if they rated the film with missing rating, if not take next person
+    3. Count their average rating
