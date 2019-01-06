@@ -94,50 +94,7 @@ public class Trainer {
 
             actualNumOfIterations++;
 
-            if (Math.abs(averageOfAverages) < 0.000001) {
-                break;
-            }
-        }
-        return actualNumOfIterations;
-    }
-
-    public static int trainForRegressor(List<List<Double>> trainList, int maxNumOfIterations, List<List<Double>> parameters) {
-        int actualNumOfIterations = 0;
-
-        List<Double> listToApply = new ArrayList<>();
-        for (int i = 0; i < maxNumOfIterations; i++) {
-
-            double averageOfAverages = countLastParamAverageForRegressor(trainList, parameters);
-
-            listToApply.add(averageOfAverages);
-            for (int j = 1; j < trainList.get(0).size(); j++) {
-                double average = countAverageForRegressor(trainList, parameters, j);
-                listToApply.add(average);
-            }
-
-            List<Double> lastParam = parameters.get(parameters.size() - 1);
-            double temp = lastParam.get(lastParam.size() - 1);
-            temp -= ALPHA * listToApply.get(0);
-            lastParam.set(lastParam.size() - 1, temp);
-            parameters.set(parameters.size() - 1, lastParam);
-
-            int counter = 0;
-            for (int j = 0; j < parameters.size() - 1; j++) {
-                List<Double> fullParameters = parameters.get(j);
-                if (fullParameters.get(0) != 0.0 && isVariableFirstDegreeForRegressor(fullParameters)) {
-                    double lastPar = fullParameters.get(fullParameters.size() - 1);
-                    lastPar -= ALPHA * listToApply.get(listToApply.size() - 1 - counter);
-                    fullParameters.set(fullParameters.size() - 1, lastPar);
-                    parameters.set(j, fullParameters);
-                    counter++;
-                }
-            }
-
-            listToApply.clear();
-
-            actualNumOfIterations++;
-
-            if (Math.abs(averageOfAverages) < 0.000001) {
+            if (Math.abs(averageOfAverages) < 0.0000000000000001) {
                 break;
             }
         }
@@ -195,17 +152,8 @@ public class Trainer {
         return Arrays.copyOf(input, input.length - 1);
     }
 
-    private static List<Double> readTrainingVariables(List<Double> input) {
-        input.remove(input.size() - 1);
-        return input;
-    }
-
     private static boolean isVariableFirstDegree(double[] input) {
         return (int) IntStream.range(0, input.length - 1).filter(i -> input[i] != 0.0).count() == 1;
-    }
-
-    private static boolean isVariableFirstDegreeForRegressor(List<Double> input) {
-        return (int) IntStream.range(0, input.size() - 1).filter(i -> input.get(i) != 0.0).count() == 1;
     }
 
     private static double countLastParamAverage(List<double[]> trainList, List<double[]> parameters) {
@@ -218,47 +166,11 @@ public class Trainer {
         return average / trainList.size();
     }
 
-    private static double countLastParamAverageForRegressor(List<List<Double>> trainList, List<List<Double>> parameters) {
-        List<List<Double>> deepCopy = new ArrayList<>();
-
-        trainList.forEach(x -> {
-            List<Double> tmp = new ArrayList<>(x);
-
-            deepCopy.add(tmp);
-        });
-
-        double average = 0.0;
-
-        for (List<Double> aTrainList : deepCopy) {
-            average += Trainee.getResult(parameters, readTrainingVariables(aTrainList)) - aTrainList.get(aTrainList.size() - 1);
-        }
-
-        return average / trainList.size();
-    }
-
     private static double countAverage(List<double[]> trainList, List<double[]> parameters, int x) {
         double average = 0.0;
 
         for (double[] aTrainList : trainList) {
             average += ((Trainee.getResult(parameters, readTrainingVariables(aTrainList)) - aTrainList[aTrainList.length - 1]) * aTrainList[x - 1]);
-        }
-
-        return average / trainList.size();
-    }
-
-    private static double countAverageForRegressor(List<List<Double>> trainList, List<List<Double>> parameters, int x) {
-        List<List<Double>> deepCopy = new ArrayList<>();
-
-        trainList.forEach(doubleList -> {
-            List<Double> tmp = new ArrayList<>(doubleList);
-
-            deepCopy.add(tmp);
-        });
-
-        double average = 0.0;
-
-        for (List<Double> aTrainList : deepCopy) {
-            average += ((Trainee.getResult(parameters, readTrainingVariables(aTrainList)) - aTrainList.get(aTrainList.size() - 1)) * aTrainList.get(x - 1));
         }
 
         return average / trainList.size();
