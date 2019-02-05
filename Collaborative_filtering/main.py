@@ -1,13 +1,12 @@
-import tmdbsimple as tmdb
 import csv
-import redis
-import pickle
-import operator
-import arrow
 import random
+import copy
+import math
 
-tmdb.API_KEY = '852eabf1faf621f417234193b0ca6f95'
 K = 5
+EPOCHS = 50
+LAMBDA = 0.001
+POSSIBLE_VALUES = [0, 1, 2, 3, 4, 5]
 
 
 def read_csv(file_name):
@@ -28,25 +27,6 @@ def write_csv(file_name, result):
             writer.writerow([r[0], r[1], r[2], r[3]])
 
 
-def get_movie_info_from_api(movies_csv):
-    movies = dict()
-    for movie in movies_csv:
-        if movie[0] not in movies:
-            movies[movie[0]] = tmdb.Movies(movie[1]).info()
-
-    return movies
-
-
-def prepare_movies_map(movies):
-    movies_dict = dict()
-
-    for row in movies:
-        if row[0] not in movies_dict:
-            movies_dict[row[0]] = (row[1], row[2])
-
-    return movies_dict
-
-
 def prepare_map(list_to_refactor):
     person_id_list = dict()
 
@@ -60,75 +40,6 @@ def prepare_map(list_to_refactor):
         person_id_list[row[1]] = x
 
     return person_id_list
-
-
-def evaluate_based_on_knn(movies_info, task_tuple, training_list):
-    evaluated_movie = movies_info[task_tuple[0]]
-
-    evaluated_movie_collection = evaluated_movie['belongs_to_collection']
-
-    nearest_dict = dict()
-
-    for tr_tup in training_list:
-        if tr_tup[0] not in nearest_dict:
-            nearest_dict[tr_tup[0]] = 0
-
-        if evaluated_movie_collection is not None:
-            if movies_info[tr_tup[0]]['belongs_to_collection'] is not None:
-                if evaluated_movie_collection['id'] != movies_info[tr_tup[0]]['belongs_to_collection']['id']:
-                    nearest_dict[tr_tup[0]] += 1
-            else:
-                nearest_dict[tr_tup[0]] += 1
-
-        if (evaluated_movie['budget'] * 0.9 > movies_info[tr_tup[0]]['budget']) or (movies_info[tr_tup[0]]['budget'] > evaluated_movie['budget'] * 1.1):
-            nearest_dict[tr_tup[0]] += 0.8
-
-        for genre in evaluated_movie['genres']:
-            if genre not in movies_info[tr_tup[0]]['genres']:
-                nearest_dict[tr_tup[0]] += 1
-
-        if (evaluated_movie['popularity'] * 0.85 > movies_info[tr_tup[0]]['popularity']) or (movies_info[tr_tup[0]]['popularity'] > evaluated_movie['popularity'] * 1.15):
-            nearest_dict[tr_tup[0]] += 0.8
-
-        for company in evaluated_movie['production_companies']:
-            if company not in movies_info[tr_tup[0]]['production_companies']:
-                nearest_dict[tr_tup[0]] += 1
-
-        for country in evaluated_movie['production_countries']:
-            if country not in movies_info[tr_tup[0]]['production_countries']:
-                nearest_dict[tr_tup[0]] += 0.5
-
-        if evaluated_movie['original_language'] != movies_info[tr_tup[0]]['original_language']:
-            nearest_dict[tr_tup[0]] += 1
-
-        if (evaluated_movie['vote_average'] - 0.5 > movies_info[tr_tup[0]]['vote_average']) or (movies_info[tr_tup[0]]['vote_average'] + 0.5 > evaluated_movie['vote_average']):
-            nearest_dict[tr_tup[0]] += 0.8
-
-        movie_date = arrow.get(evaluated_movie['release_date'], 'YYYY-MM-DD').date()
-        compared_date = arrow.get(movies_info[tr_tup[0]]['release_date'], 'YYYY-MM-DD').date()
-
-        if (movie_date.year - 10 > compared_date.year) or (compared_date.year + 10 > movie_date.year):
-            nearest_dict[tr_tup[0]] += 0.8
-
-    sorted_nearest_dict = sorted(nearest_dict.items(), key=operator.itemgetter(1))[:K]
-
-    result = 0
-
-    for s in sorted_nearest_dict:
-        result += int(next(x for x in training_list if x[0] == s[0])[1])
-
-    return str(int(round(result / K)))
-
-
-def cache_movies(movies):
-    r = redis.Redis(host='localhost', port=6379, db=0)
-
-    if r.get('movies') is not None:
-        return pickle.loads(r.get('movies'))
-    else:
-        movies_info = get_movie_info_from_api(movies)
-        r.set('movies', pickle.dumps(movies_info))
-        return movies_info
 
 
 def convert_task_map_to_list(task_map, task_list):
@@ -151,20 +62,117 @@ def generate_matrix(ids, counter):
     return result_matrix
 
 
-def train(training_map, task_map, movies_info, movies_ids):
+def count_error(output, expected):
+    return 0.5 * pow((output - int(expected)), 2)
+
+
+def gen_output(p, x):
+    result = 0.0
+    for i in range(0, len(x)):
+        result += (p[i] * x[i])
+
+    result += p[len(p) - 1]
+
+    return int(round(result))
+
+
+def create_sets_holder(data):
+    result = dict()
+    random.shuffle(data)
+    result['training'] = data[0:int(0.9 * len(data))]
+    result['validation'] = data[int(0.9 * len(data)):len(data)]
+    return result
+
+
+def compute_sum(derivs, fac, idx):
+    sum = 0.0
+    for key, value in derivs.items():
+        sum += value * fac[key][idx]
+
+    return sum
+
+
+def find_hyper(errors):
+    distances = dict()
+    for i in range(0, len(errors)):
+        err = errors[i]
+        t = err[0]
+        v = err[1]
+        distance = math.sqrt(pow(t, 2) + pow(v, 2))
+        distances[i] = distance
+
+    return sorted(distances.items(), key=lambda kv: kv[1])[0][0]
+
+
+def train(training_map, errors, movies_ids, full_train, features_matrices, p_factor_list):
     people_ids = set()
 
     for key in training_map.keys():
         people_ids.add(key)
 
-    for i in range(1, 10):
+    for i in range(1, 11):
         features_matrix = generate_matrix(movies_ids, i)
         p_factors = generate_matrix(people_ids, i + 1)
 
+        validation_errors = []
+        train_errors = []
 
+        for j in range(0, EPOCHS * i):
+            holder = create_sets_holder(full_train)
 
-        print('test')
-    pass
+            derivative = dict()
+
+            for person_id in training_map.keys():
+                derivative[person_id] = dict()
+
+                for person in training_map[person_id]:
+                    derivative[person_id][person[0]] = 0.0
+
+            train_err = []
+
+            for p in holder['training']:
+                output = gen_output(p_factors[p[1]], features_matrix[p[2]])
+                train_err.append(count_error(output, p[3]))
+                actual_deriv = derivative[p[1]][p[2]]
+                new_deriv = actual_deriv + (output - float(p[3]))
+
+                derivative[p[1]][p[2]] = new_deriv
+
+            train_errors.append(sum(train_err) / float(len(train_err)))
+            saved_features = copy.deepcopy(features_matrix)
+            for key, value in saved_features.items():
+                deriv_for_movie = dict()
+                for der_key, der_val in derivative.items():
+                    if key in der_val:
+                        deriv_for_movie[der_key] = der_val[key]
+
+                new_values = []
+                for k in range(0, len(value)):
+                    new_value = value[k] - LAMBDA * compute_sum(deriv_for_movie, p_factors, k)
+                    new_values.append(new_value)
+                saved_features[key] = new_values
+
+            for key, value in p_factors.items():
+                derivs_for_person = derivative[key]
+                new_values = []
+                for k in range(0, len(value) - 1):
+                    new_value = value[k] - LAMBDA * compute_sum(derivs_for_person, saved_features, k)
+                    new_values.append(new_value)
+                new_values.append(value[len(value) - 1] - LAMBDA * sum(derivs_for_person.values()))
+                p_factors[key] = new_values
+
+            validation_err = []
+            for v in holder['validation']:
+                output = gen_output(p_factors[v[1]], features_matrix[v[2]])
+                validation_err.append(count_error(output, v[3]))
+
+            validation_errors.append(sum(validation_err) / float(len(validation_err)))
+
+        errors.append([sum(validation_errors) / float(len(validation_errors)),
+                       sum(train_errors) / float(len(train_errors))])
+
+        features_matrices.append(features_matrix)
+        p_factor_list.append(p_factors)
 
 
 def main():
@@ -178,22 +186,33 @@ def main():
 
     task_map = prepare_map(task)
 
-    movies_info = cache_movies(movies)
-
     movies_ids = set()
 
     for movie in movies:
         movies_ids.add(movie[0])
 
-    train(training_map, task_map, movies_info, movies_ids)
+    errors = []
+
+    features_matrices = []
+
+    p_factor_list = []
+
+    train(training_map, errors, movies_ids, training, features_matrices, p_factor_list)
+
+    hyper = find_hyper(errors)
+
+    features_matrix = features_matrices[hyper]
+    p_factors = p_factor_list[hyper]
 
     for person in task_map:
         result = []
         p = task_map[person]
-        tr = training_map[person]
 
         for tupl in p:
-            result.append((tupl[0], evaluate_based_on_knn(movies_info, tupl, tr)))
+            prediction = gen_output(p_factors[person], features_matrix[tupl[0]])
+            if prediction not in POSSIBLE_VALUES:
+                prediction = random.randint(0, 5)
+            result.append((tupl[0], str(prediction)))
 
         task_map[person] = result
 
@@ -204,5 +223,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
